@@ -1,0 +1,25 @@
+# One-time setup (e.g., install system tools, global CLIs).
+initialize: |
+  nvm install 10
+# Install project dependencies (runs during builds, surfaced to agent at session start).
+maintenance: |
+  source ~/.nvm/nvm.sh && nvm use 10 && npm install && npm rebuild node-sass
+  (source ~/.nvm/nvm.sh && nvm use 10 && npx gulp inject)
+  (cd blur-admin-modern && source ~/.nvm/nvm.sh && nvm use 20 && npm install)
+knowledge:
+  - name: startup
+    contents: |
+      source ~/.nvm/nvm.sh && nvm use 10 && npx gulp serve
+      # Legacy app runs on http://localhost:3000
+      (cd blur-admin-modern && source ~/.nvm/nvm.sh && nvm use 20 && npx ng serve --port 4200)
+      # Modern (empty, phase-1) Angular workspace runs on http://localhost:4200
+  - name: build
+    contents: |
+      source ~/.nvm/nvm.sh && nvm use 10 && npx gulp build
+      (cd blur-admin-modern && source ~/.nvm/nvm.sh && nvm use 20 && npm run build)
+  - name: notes
+    contents: |
+      Legacy AngularJS 1.5 + Gulp 3.x + Bower app. gulp-sass pulls node-sass 4.14.1,
+      which ships a prebuilt binary for Node 10, so pin Node to 10 (nvm use 10).
+      `npm install` runs the postinstall `bower install` automatically.
+      This repo has no webpack/React or Playwright.
